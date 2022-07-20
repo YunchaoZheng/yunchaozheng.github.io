@@ -1,0 +1,928 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="澤村·もう一郎/YunchaoZheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基本信息作者: Chuhan Wu, Fangzhao Wu, Tao Qi, Yongfeng Huang等主要机构: Department of Electronic Engineering &amp; BNRist, Tsinghua University、Microsoft Research Asia来源: SIGIR 2021(In Proceeding，貌似应该没发出来)提交时间: 2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MM-Rec:Multimodal News Recommendation">
+<meta property="og:url" content="https://yunchaozheng.github.io/2022/03/10/wannot-readpaper-0003/index.html">
+<meta property="og:site_name" content="Re:Zero 〜異世界行ったら本気だす〜">
+<meta property="og:description" content="基本信息作者: Chuhan Wu, Fangzhao Wu, Tao Qi, Yongfeng Huang等主要机构: Department of Electronic Engineering &amp; BNRist, Tsinghua University、Microsoft Research Asia来源: SIGIR 2021(In Proceeding，貌似应该没发出来)提交时间: 2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220330154658.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220331164032.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220331195301.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220330154658.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401082511.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401102340.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401102516.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401111207.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401151935.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401152608.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401153001.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401153106.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401153442.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_01.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_02.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_03.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_04.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_05.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_06.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_07.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_08.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_09.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_10.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_11.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_12.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_13.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_14.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_15.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_16.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_17.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_18.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_19.jpg">
+<meta property="article:published_time" content="2022-03-10T08:29:18.000Z">
+<meta property="article:modified_time" content="2022-07-03T14:26:08.234Z">
+<meta property="article:author" content="澤村·もう一郎&#x2F;YunchaoZheng">
+<meta property="article:tag" content="新闻推荐">
+<meta property="article:tag" content="图像嵌入">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220330154658.png">
+  
+  
+  
+  <title>MM-Rec:Multimodal News Recommendation 😸 Re:Zero 〜異世界行ったら本気だす〜</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yunchaozheng.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":50,"cursorChar":"😺","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","app_key":"vi1n3CFEQUwkeRVGiw6pbL4L","server_url":"https://yzugqiba.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tensei~日记⭐</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/index.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.7)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MM-Rec:Multimodal News Recommendation"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-03-10 16:29" pubdate>
+          2022年3月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MM-Rec:Multimodal News Recommendation</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h1><p>作者: Chuhan Wu, Fangzhao Wu, Tao Qi, Yongfeng Huang等<br>主要机构: Department of Electronic Engineering &amp; BNRist, Tsinghua University、Microsoft Research Asia<br>来源: SIGIR 2021(In Proceeding，貌似应该没发出来)<br>提交时间: 2021-Apr-15<br>关键词: News RS, Multimodality</p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章废话不多，干话，也不多，用艾尔登法环体总结如下：</p>
+<blockquote><p>前无带图片的新闻数据集</p>
+<p>接下来，带图片的新闻数据集很有用</p>
+<p>前无图片嵌入的新闻推荐</p>
+<p>接下来，图片嵌入的新闻推荐很有用</p>
+</blockquote>
+
+<p>实际上，这篇文章主要贡献两个：一、爬取了 [Feb. 25, 2020 to Mar. 16, 2020] 这段时间的 Microsoft News，并且和 Mind 数据集(微软新闻数据集，加上超链接)一样加了 click 数据，形成了一个带图片的新闻数据集；二、建立了一个文本+图片嵌入的 ctr 预测模型</p>
+<h1 id="Inspiration"><a href="#Inspiration" class="headerlink" title="Inspiration"></a>Inspiration</h1><p>不行不行，不加一点东西开组会老师不能买账啊。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220330154658.png" srcset="/img/loading.gif" lazyload class="" title="News with images for news recommendation" alt="News with images for news recommendation">
+<p>新闻标题和图片在吸引用户注意力，进行点击这一行为链中通常具有隐含的关联性。这一点是直观性的，从上图给出的一个 click 看到，用户点击的一组新闻中，第二条新闻的关键词 “cowboy” 与图中的球员相关（但是不能从语义上判断），因此通过图片嵌入的信息，可以从图3挖掘出相似的图片嵌入，进而进行推荐。这一点在传统利用文本挖掘的推荐系统中是缺乏利用的。</p>
+<h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p>先整理一下目前都能收集到的新闻数据集吧，公开与非公开(但能共享)的，一部分新闻数据集不公开的原因是版权的问题，还有一部分可能是作者不想做公开，毕竟流量费用还挺贵的。</p>
+<table>
+<thead>
+<tr>
+<th>DataSet</th>
+<th>Lang</th>
+<th>Users</th>
+<th>News</th>
+<th>Clicks</th>
+<th>News Info</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Plisa</td>
+<td>German</td>
+<td>Unknown</td>
+<td>70,353</td>
+<td>1,095,323</td>
+<td>title,body</td>
+<td></td>
+</tr>
+<tr>
+<td>Adressa</td>
+<td>Norwegian</td>
+<td>3,083,438</td>
+<td>48,486</td>
+<td>27,223,576</td>
+<td>title,body,category</td>
+<td></td>
+</tr>
+<tr>
+<td>Globo</td>
+<td>Portuguese</td>
+<td>314,000</td>
+<td>46,000</td>
+<td>3,000,000</td>
+<td>No Origin, only word embeddings</td>
+<td></td>
+</tr>
+<tr>
+<td>Yahoo!</td>
+<td>English</td>
+<td>Unknown</td>
+<td>14,180</td>
+<td>34,022</td>
+<td>No Origin, only word IDs</td>
+<td></td>
+</tr>
+<tr>
+<td>Mind</td>
+<td>English</td>
+<td>1,000,000</td>
+<td>161,013</td>
+<td>24,155,470</td>
+<td>title,body(need crawl),category,link</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Not OA but shared</p>
+<table>
+<thead>
+<tr>
+<th>DataSet</th>
+<th>Lang</th>
+<th>Users</th>
+<th>News</th>
+<th>Clicks</th>
+<th>News Info</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mind_MM-Rec</td>
+<td>English</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>title,body(need crawl),image,category,link</td>
+<td></td>
+</tr>
+<tr>
+<td>Visual News</td>
+<td>English</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>title,image</td>
+<td></td>
+</tr>
+<tr>
+<td>Picture News Collection</td>
+<td>Chinese</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>title,image</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1coR2p19l_xCpJTD7n5opIA#list/path=%2F">https://pan.baidu.com/s/1coR2p19l_xCpJTD7n5opIA#list/path=%2F</a></td>
+</tr>
+<tr>
+<td>Corpus of Images and Text</td>
+<td>English</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>title,body*,image*,category,link  (* stored as feature vector)</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/abedjeti/ADS-NewsArticles">https://github.com/abedjeti/ADS-NewsArticles</a></td>
+</tr>
+</tbody></table>
+<h1 id="MM-NRec"><a href="#MM-NRec" class="headerlink" title="MM-NRec"></a>MM-NRec</h1><p>MM-Rec 全称叫 Multimodality News Recommand System 多模态新闻推荐系统，其实是融合了文本和图片信息进行新闻推荐。<br>它的核心组件有两部分：多模态新闻编码器(Multimodal News Encoder)、多模态新闻推荐(Multimodal News Recommendation)</p>
+<h2 id="多模态新闻编码"><a href="#多模态新闻编码" class="headerlink" title="多模态新闻编码"></a>多模态新闻编码</h2><p>对于有标题、类别、正文、图片等多种内容的新闻来说：</p>
+<ol>
+<li>用户点击新闻不仅是因为他们对新闻标题感兴趣，而且也是因为新闻图片的吸引力，多模态建模很重要</li>
+<li>新闻图像中的不同区域也有不同的信息量</li>
+<li>同一新闻的标题和图片通常有一些相互之间的关系</li>
+</ol>
+<p>MM-NRec 首先用多模态新闻编码器(下面简称MNE)对新闻内容进行编码，但是 MM-NRec 的作者只使用了【图片+标题】这两种信息，明明是和 Mind 数据集作者合作的怎么不用全文…对图片进行了注意力检测，对标题进行序列化然后放到一大张 ViLBERT 进行嵌入。</p>
+<p>首先来看一下多模态新闻编码器，这里是原文画的图：</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220331164032.png" srcset="/img/loading.gif" lazyload class="" title="多模态新闻编码器结构图" alt="多模态新闻编码器结构图">
+
+<h3 id="ROI"><a href="#ROI" class="headerlink" title="ROI"></a>ROI</h3><p>Region of Interest，RoI是指 Selective Search 完成后得到的“候选框”在特征图上的映射。这里还是不讲人话，先简单提一下，ROI 可以认为是图上有用的部分。<br>@搞一页来讲一下 ROT 与 Mask-RCNN</p>
+<p>对于图像部分，作者用在客观检测任务中预训练的 Mask-RCNN 模型来提取新闻图像的 ROI，进一步使用 ResNet-50 模型来提取 ROI 的特征，形成一个特征序列 [ep1, ep2, ep3 … epk]，其中 k 为 ROI 的数量。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220331195301.png" srcset="/img/loading.gif" lazyload class="" title="ROI提取" alt="ROI提取">
+
+<p>其输出是一个 ROI 的深度表示。</p>
+<h3 id="ViLBERT"><a href="#ViLBERT" class="headerlink" title="ViLBERT"></a>ViLBERT</h3><p>直观来说是用独立的模型对新闻文本和图像进行建模。然而，同一新闻的标题和图片通常有一些相互之间的关系。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220330154658.png" srcset="/img/loading.gif" lazyload class="" title="News with images for news recommendation" alt="News with images for news recommendation">
+<p>这张新闻图片图1的 “Fauci” 和他的照片就相关，通过发掘潜在的标题-图片相关性，作者认为能更好地用于推断用户兴趣。</p>
+<p>视觉语言学模型可以有效地对文本和图像之间的跨模式关系进行建模。</p>
+<p>因此作者将 ROI 部分的特征序列，即 ROI 代表的信息本身，加上标题的单词序列，输入 ViLBERT 视觉语言学模型。<br>@搞一页来讲一下 ViLBERT</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401082511.png" srcset="/img/loading.gif" lazyload class="" title="编码器架构" alt="编码器架构">
+
+<h3 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h3><p>针对 ViLBERT 的输出，ROI 部分的特征序列 Hp =  [hp1, hp2 … hpk] 与词表示序列 Ht = [ht1, ht2 … htm]，作者使用了一个单词注意力网络来学习标题表示、一个图注意力网络来学习图表示：</p>
+<p>标题表示：Wt 是一个参数矩阵，qt 是一个注意力查询向量</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401102340.png" srcset="/img/loading.gif" lazyload class="">
+<p>最后，标题的最终表示等于原表示乘上注意力权重， rt = Rt * at<br>ROI 的注意力权重也是类似的，Wp 是参数，qp 是注意力查询向量</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401102516.png" srcset="/img/loading.gif" lazyload class="">
+<p>图片的最终表示等于原 ROI 表示乘上注意力权重， rp = Rp * ap</p>
+<h2 id="多模态新闻推荐"><a href="#多模态新闻推荐" class="headerlink" title="多模态新闻推荐"></a>多模态新闻推荐</h2><p>本节讲的内容实在是太少了，也不知道作者怎么水一页的，但是我要汇报，也许要水两页，所以…</p>
+<h3 id="用户兴趣建模"><a href="#用户兴趣建模" class="headerlink" title="用户兴趣建模"></a>用户兴趣建模</h3><p>和以往的推荐一样，作者从用户的历史点击中来学习用户的兴趣。<br>并不是用户点击的所有新闻都对用户兴趣的建立有促进作用。<br>候选新闻可能与被点击新闻有一些跨模式的关系，比如候选图片与被点击标题。</p>
+<p>@这里再说一说impression、session、cookie、user等概念吧</p>
+<p>首先，以前点击过的新闻的标题和图片表示<br>Rt = [rt1, rt2 … rtp]<br>Rp = [rp1, rp2 … rpp]  – 我一定找时间补一下 Markdown 怎么写公式</p>
+<p>然后，候选新闻的标题和图片表示，rtc, rpc  (c - candidate)</p>
+<p>那么，用户兴趣用几方面的 softmax 连结起来</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401111207.png" srcset="/img/loading.gif" lazyload class="" title="用户兴趣表示">
+
+<h3 id="新闻点击预测"><a href="#新闻点击预测" class="headerlink" title="新闻点击预测"></a>新闻点击预测</h3><p>由上节，候选新闻的标题、图片表示，rtc, rpc<br>有用户的兴趣表示 u</p>
+<p>构建候选新闻推荐得分，y = rtc * u + rpc * u</p>
+<p>使用负抽样技术，从新闻会话日志中建立标记样本。具体来说，对于每个被点击的新闻，随机选择同一会话中显示的𝑁个非点击的新闻，我们共同预测𝑁个+ 1 新闻的分数。通过 softmax 函数进一步标准化，将新闻点击预测问题重新表述为一个多分类任务，即预测哪条新闻被点击。使用交叉熵作为模型训练的损失函数。</p>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><p>作者使用了一个<br>A dataset based on the logs collected from the Microsoft News website during three weeks (from Feb. 25, 2020 to Mar. 16, 2020)<br>说实话这个可能是我认为本文唯一的贡献了，然而作者不公开。</p>
+<p>这里谈谈 Mind 数据集有什么问题：Mind 有详尽的文本信息、同时也有一个 Scrapy 脚本可以获取全文数据确实，但是 Mind 数据中指向的链接已经是 Archive 类型链接了，图片缓存已经没有了 404。第二，Mind 数据集虽然分了 dev/train/test，而且还很贴心的给了前期开发用的小型数据集，但是 issue 中指出 Mind 数据集中的 test 缺少数据标签，没办法 evaluate ，所以还是需要自己划分 train/test。</p>
+<p>说回来，这里是作者的数据集。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401151935.png" srcset="/img/loading.gif" lazyload class="" title="dataset" alt="dataset">
+<p>黄色数据部分是我们搞不到的数据。</p>
+<p>第一周的日志被用来构建用户历史，其余会话被用来形成点击和非点击样本。按时间对这些会话进行排序，前100万个会话用于训练，后 10 万个会话用于验证，其余用于测试。</p>
+<h2 id="Comparison-with-baselines"><a href="#Comparison-with-baselines" class="headerlink" title="Comparison with baselines"></a>Comparison with baselines</h2><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401152608.png" srcset="/img/loading.gif" lazyload class="" title="Performance comparison of different methods" alt="Performance comparison of different methods">
+
+<h2 id="Ablation-Study"><a href="#Ablation-Study" class="headerlink" title="Ablation Study"></a>Ablation Study</h2><p>变体1：考虑标题+图片、只考虑标题、只考虑图片</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401153001.png" srcset="/img/loading.gif" lazyload class="" title="Effectiveness of multimodal information" alt="Effectiveness of multimodal information">
+
+<p>变体2：考虑共同注意力转换+候选新闻注意力、只考虑共同注意力转换、只考虑候选新闻注意力<br>is it necessary ?</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401153106.png" srcset="/img/loading.gif" lazyload class="" title="Effectiveness of the co-attentional Transformers in ViLBERT and crossmodal candidate-aware attention" alt="Effectiveness of the co-attentional Transformers in ViLBERT and crossmodal candidate-aware attention">
+<h2 id="Case-Study"><a href="#Case-Study" class="headerlink" title="Case Study"></a>Case Study</h2><p>第一条: 正面相关，NRMS 没预测对但我们对了<br>第二条：不相关，NRMS 预测错了但我们预测得还行<br>第三条：完全没关系，大家都知道完全没关系</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220401153442.png" srcset="/img/loading.gif" lazyload class="" title="case" alt="case">
+
+<h1 id="My-Slides"><a href="#My-Slides" class="headerlink" title="My Slides"></a>My Slides</h1><p>呀，理解不好，暂时这样看看吧</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_01.jpg" srcset="/img/loading.gif" lazyload class="" title="1" alt="1">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_02.jpg" srcset="/img/loading.gif" lazyload class="" title="2" alt="2">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_03.jpg" srcset="/img/loading.gif" lazyload class="" title="3" alt="3">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_04.jpg" srcset="/img/loading.gif" lazyload class="" title="4" alt="4">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_05.jpg" srcset="/img/loading.gif" lazyload class="" title="5" alt="5">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_06.jpg" srcset="/img/loading.gif" lazyload class="" title="6" alt="6">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_07.jpg" srcset="/img/loading.gif" lazyload class="" title="7" alt="7">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_08.jpg" srcset="/img/loading.gif" lazyload class="" title="8" alt="8">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_09.jpg" srcset="/img/loading.gif" lazyload class="" title="9" alt="9">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_10.jpg" srcset="/img/loading.gif" lazyload class="" title="10" alt="10">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_11.jpg" srcset="/img/loading.gif" lazyload class="" title="11" alt="11">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_12.jpg" srcset="/img/loading.gif" lazyload class="" title="12" alt="12">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_13.jpg" srcset="/img/loading.gif" lazyload class="" title="13" alt="13">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_14.jpg" srcset="/img/loading.gif" lazyload class="" title="14" alt="14">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_15.jpg" srcset="/img/loading.gif" lazyload class="" title="15" alt="15">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_16.jpg" srcset="/img/loading.gif" lazyload class="" title="16" alt="16">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_17.jpg" srcset="/img/loading.gif" lazyload class="" title="17" alt="17">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_18.jpg" srcset="/img/loading.gif" lazyload class="" title="18" alt="18">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/PPT_%E9%A1%B5%E9%9D%A2_19.jpg" srcset="/img/loading.gif" lazyload class="" title="19" alt="19">
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87/" class="category-chain-item">论文</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" class="category-chain-item">推荐系统</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%96%B0%E9%97%BB%E6%8E%A8%E8%8D%90/">#新闻推荐</a>
+      
+        <a href="/tags/%E5%9B%BE%E5%83%8F%E5%B5%8C%E5%85%A5/">#图像嵌入</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MM-Rec:Multimodal News Recommendation</div>
+      <div>https://yunchaozheng.github.io/2022/03/10/wannot-readpaper-0003/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>澤村·もう一郎/YunchaoZheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年3月10日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/04/05/optimization-methods-mooc-homework/" title="「最优化方法」MOOC Chapter 2.3.4 Solution">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「最优化方法」MOOC Chapter 2.3.4 Solution</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/10/wannot-readpaper-0002/" title="MIND:A Large-scale Dataset for News Recommendation">
+                        <span class="hidden-mobile">MIND:A Large-scale Dataset for News Recommendation</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","appKey":"vi1n3CFEQUwkeRVGiw6pbL4L","path":"window.location.pathname","placeholder":"一郎でせ、こにちは！","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      这个博客基于「 <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 」他们做了一些很棒的东西 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

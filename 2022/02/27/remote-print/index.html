@@ -1,0 +1,782 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="澤村·もう一郎/YunchaoZheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="这篇是开学后发现打印机设施不知道为什么不响应了，也不想追究原因而写的一篇曲线救国打印方法。首先，讲述一下团队打印机以前采用过的方案，并分析一下优缺点。 裸连时代裸连时代，指的是用户直接使用 U 盘、移动硬盘等外置设备连接到打印机所在的终端上，然后操作打印机打印。  裸连的好处在于丝滑无延迟的操控体验，然而因为终端的接口、显示功能都不是很好，而且在庞大、先进的实验室竟然做不到！！我在座位上点一下，远">
+<meta property="og:type" content="article">
+<meta property="og:title" content="远程打印指南">
+<meta property="og:url" content="https://yunchaozheng.github.io/2022/02/27/remote-print/index.html">
+<meta property="og:site_name" content="Re:Zero 〜異世界行ったら本気だす〜">
+<meta property="og:description" content="这篇是开学后发现打印机设施不知道为什么不响应了，也不想追究原因而写的一篇曲线救国打印方法。首先，讲述一下团队打印机以前采用过的方案，并分析一下优缺点。 裸连时代裸连时代，指的是用户直接使用 U 盘、移动硬盘等外置设备连接到打印机所在的终端上，然后操作打印机打印。  裸连的好处在于丝滑无延迟的操控体验，然而因为终端的接口、显示功能都不是很好，而且在庞大、先进的实验室竟然做不到！！我在座位上点一下，远">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227180938.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227181913.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227183742.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227185731.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227185843.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220307085736.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220307090110.png">
+<meta property="article:published_time" content="2022-02-27T09:32:42.000Z">
+<meta property="article:modified_time" content="2022-07-03T14:26:08.232Z">
+<meta property="article:author" content="澤村·もう一郎&#x2F;YunchaoZheng">
+<meta property="article:tag" content="Frp">
+<meta property="article:tag" content="RDP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227180938.png">
+  
+  
+  
+  <title>远程打印指南 😸 Re:Zero 〜異世界行ったら本気だす〜</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yunchaozheng.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":50,"cursorChar":"😺","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","app_key":"vi1n3CFEQUwkeRVGiw6pbL4L","server_url":"https://yzugqiba.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tensei~日记⭐</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/index.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.7)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="远程打印指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-02-27 17:32" pubdate>
+          2022年2月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">远程打印指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这篇是开学后发现打印机设施不知道为什么不响应了，也不想追究原因而写的一篇曲线救国打印方法。<br>首先，讲述一下团队打印机以前采用过的方案，并分析一下优缺点。</p>
+<h1 id="裸连时代"><a href="#裸连时代" class="headerlink" title="裸连时代"></a>裸连时代</h1><p>裸连时代，指的是用户直接使用 U 盘、移动硬盘等外置设备连接到打印机所在的终端上，然后操作打印机打印。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227180938.png" srcset="/img/loading.gif" lazyload class="" title="裸连时代">
+<p>裸连的好处在于丝滑无延迟的操控体验，然而因为终端的接口、显示功能都不是很好，而且在庞大、先进的实验室竟然做不到！！<br>我在座位上点一下，远端的打印机就把我要的文件吐出来这样充满优越感的操作<br>(当然不是因为放打印机的桌子刚好在我旁边)，<br>因此这个方案被我非常鄙弃。</p>
+<h1 id="VPN-时代"><a href="#VPN-时代" class="headerlink" title="VPN 时代"></a>VPN 时代</h1><p>Windows 平台的共享打印机协议，在我们的校园网中是会被拦截的，网络与共享中心中也不会找到打印机所在的服务器，思考过后我提出了一个大胆的想法。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227181913.png" srcset="/img/loading.gif" lazyload class="" title="VPN 时代">
+<p>利用现有的校园网这一天然大局域网，我们将打印服务器(打印机物理连接的 WindowsServer 服务器)接入了校园网，在上面利用 WindowsServer 的基础设施启动了 VPN 服务，然后让需要连接打印的用户机器暂时连接 VPN 网络，即可进入加密隧道，形成紧密的局域网关系，让共享打印机实现成为可能。</p>
+<p>然而，在保持运作数小时后，VPN 流量被校园网探测出来，并且截断了。<br>VPN 流量禁止，但是了解到 HTTP 流量是被允许的(因为我经常用 Jellyfin 在宿舍看实验室机器里存的电影，当然这是后话了)</p>
+<h1 id="HTTP-时代"><a href="#HTTP-时代" class="headerlink" title="HTTP 时代"></a>HTTP 时代</h1><p>在悲催的，仅存在了数小时的 VPN 时代过去后，我们的打印机终于迎来了繁荣近半年(自称)的 HTTP 时代，进入了便捷(也没那么便捷)的点一下打印生活。</p>
+<p>共享打印机信息封装在 HTTP 数据中，通过 IPP 连接的方式，被广泛装在团队各个电脑上，只要获得了正确的 IPP 地址、用户名、密码，就可以发送打印任务到打印机上。</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IPP地址</td>
+<td><a target="_blank" rel="noopener" href="http://10.8.130.137:8888/candyprinter/.printer">http://10.8.130.137:8888/candyprinter/.printer</a></td>
+<td>打印机安装地址</td>
+</tr>
+<tr>
+<td>用户名</td>
+<td>Administrator</td>
+<td>安装用户名</td>
+</tr>
+<tr>
+<td>密码</td>
+<td>***</td>
+<td>请当面问我</td>
+</tr>
+<tr>
+<td>驱动</td>
+<td><a target="_blank" rel="noopener" href="https://10.8.130.137:7777/down/V9GFKgSfheku">https://10.8.130.137:7777/down/V9GFKgSfheku</a></td>
+<td>驱动文件</td>
+</tr>
+</tbody></table>
+<p>经过改进后，我们的打印机任务可以从校园网任何地方发起，因此在实验室打印非常便捷，当然也存在从食堂打印的潜力？</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227183742.png" srcset="/img/loading.gif" lazyload class="" title="HTTP 时代">
+<h2 id="HTTP-时代改"><a href="#HTTP-时代改" class="headerlink" title="HTTP 时代改"></a>HTTP 时代改</h2><p>后期当我们获得了一架服务器(用作 Docker 服务器那个，下称 Docker 服务器)以及校园网的静态地址后，改进方案来了。</p>
+<p>以前的 HTTP 打印方式，由于依赖打印服务器本身的 IP 地址，可惜这个地址是通过 DHCP 下发的，尽管一直连接着基本上不会变化，但改变的可能性依然存在。因此，我们的 HTTP 打印架构发生了以下的变化:</p>
+<p>用户 — 用户电脑 — 打印服务器 — 打印机<br> —&gt;<br>用户 — 用户电脑 — Docker 服务器 — 打印服务器 — 打印机</p>
+<p>解决的方案是利用 Frp 将打印服务器的 HTTP 端口映射到 Docker 服务器的 8888 端口，具体细节与 Frp 相关内容均重复，略过。</p>
+<h1 id="RDP-时代"><a href="#RDP-时代" class="headerlink" title="RDP 时代"></a>RDP 时代</h1><p>RDP 时代存在意义是为了解决 HTTP 打印有时抽风的情况，利用 HTTP 打印时可能会出现，连接不上、连接延迟高、打印任务卡住、打印任务无法删除等等问题，这是因为一些未知的原因(这个该死的打印机驱动适配不好！本身体质欠佳！总之就是莫名其妙不是我的问题！)有时候需要手动重启打印机或者打印服务器，我把打印服务器(WindowsServer)的 RDP 也通过 Docker 服务器穿透了，作为我自己经常用的一种手段，在这里共享出来，作为日后解决方案的一种。操作方法如下:</p>
+<ol>
+<li>在开始菜单(或者通过搜索)打开“远程桌面连接”</li>
+<li>计算机地址 “10.8.130.137”</li>
+<li>用户名 “Administrator”</li>
+<li>密码 “你来问我”</li>
+</ol>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227185731.png" srcset="/img/loading.gif" lazyload class="" title="远程桌面">
+<ol start="5">
+<li>本地资源–详细信息–驱动器–勾选</li>
+<li>连接，确定所有警告并连接</li>
+<li>在远程桌面里，通过资源管理器就能找到用户电脑驱动器的文件，拷贝打印即可</li>
+</ol>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220227185843.png" srcset="/img/loading.gif" lazyload class="" title="远程驱动器">
+
+<h1 id="后注：常见问题解决方法"><a href="#后注：常见问题解决方法" class="headerlink" title="后注：常见问题解决方法"></a>后注：常见问题解决方法</h1><ol>
+<li>提交打印后无响应<br>打印机从休眠启动时会出现“起床呆滞”现象，表现为启动后不打印的样子，解决方法就是长按电源键关机(6s 以上)，再启动</li>
+<li>删除打印失败<br>打印机的驱动问题导致，解决方法，长按电源键关机(6s 以上)，并通过 RDP 方案重启打印服务器</li>
+<li>Word、Excel 等软件卡住<br>罕见的 HTTP 打印机失联后，Word 等软件会保持等待打印机响应(通常会等待数十秒)，表现为软件卡住，解决方法是暂时删除 HTTP 打印机，直到我们认为打印机已经恢复</li>
+<li>打印中断<br>因缺纸导致的中断，只要补纸后按一下电源键继续；因其他情况发生的打印中断，貌似在重启动后，提交下一个任务时，会先进行完毕中断前的任务，再执行后续任务(印象中)</li>
+</ol>
+<h1 id="后注2：CandyPrinter-安装方法"><a href="#后注2：CandyPrinter-安装方法" class="headerlink" title="后注2：CandyPrinter 安装方法"></a>后注2：CandyPrinter 安装方法</h1><p>CandyPrinter 是团队仅有的一台激光黑白打印/扫描机，产品是 Lenovo M7268，虽然说他经常出现各种问题，比如罢工啊，卡纸啊，“花式打印”啊，但是这是我们仅有的一台打印机了。将 CandyPrinter(仅打印功能)安装到个人电脑的流程如下：</p>
+<ol>
+<li>个人电脑连接至 DUT 的集团网路，不建议在个人笔记本安装 CandyPrinter，因为个人笔记本离开 DUT 网路后，很容易造成“继续努力找到 CandyPrinter” 从而导致某些软件在一段时间内卡死。</li>
+<li>在设置里找到打印机相关选项，Windows11/10 是在设置-(设备)蓝牙和其他设备，启动到打印机设置选单</li>
+<li>点击添加打印机，并且等待一会，出现“我需要的打印机不在列表中 – 手动添加”</li>
+</ol>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220307085736.png" srcset="/img/loading.gif" lazyload class="" width="600" height="180" title="手动添加1">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220307090110.png" srcset="/img/loading.gif" lazyload class="" width="640" height="540" title="手动添加2">
+<ol start="4">
+<li>正如上图中展示的，在“按名称选择共享打印机”中手动填写打印机的地址:<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">10.8</span>.<span class="hljs-number">130.137</span>:<span class="hljs-number">8888</span><span class="hljs-regexp">/printers/</span>candyprinter/.printer<br></code></pre></td></tr></table></figure></li>
+<li>下载打印机的驱动文件，可以尝试我们的内网地址: <a href="https://10.8.130.137:7777/down/V9GFKgSfheku" title="" target="">M7268_Series_drivers_Win_20210518163312.7z</a><br>如果上述网址失效，可以尝试联想官方的公网地址: <a href="https://lenovo-upload.oss-cn-beijing.aliyuncs.com/drivers/M7268_Series_drivers_Win_20210518163312.7z" title="" target="">M7268_Series_drivers_Win_20210518163312.7z</a></li>
+<li>使用 <a href="https://www.7-zip.org/" title="" target="">7-zip</a> 等压缩软件解压，获得一个 exe 文件(它其实也是一个压缩包)，继续用压缩软件打开它并解压，这样我们可以避免安装不必要的软件，仅使用驱动文件。</li>
+<li>解压后，得到如下一个文件夹及内部内容，保留先不要动<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs livescript">.<span class="hljs-string">\LenovoABC_Plus_M7268&amp;M7268W_FC012\</span><br>    <span class="hljs-string">\Application</span>        <span class="hljs-comment"># .NetFramework 4.0 installation wizard</span><br>    <span class="hljs-string">\M7268&amp;M7268W</span><br>        <span class="hljs-string">\Drivers</span><br>            <span class="hljs-string">\HB</span><br>                <span class="hljs-string">\Win_87VistaXP</span><br>                    <span class="hljs-string">\x32</span><br>                    <span class="hljs-string">\x64</span><br>                        <span class="hljs-string">\English</span><br>                        <span class="hljs-string">\SimplifiedChinese</span><br>                            <span class="hljs-string">\LNTHR5Z.cab</span><br>                            <span class="hljs-string">\lnthr5z.cat</span><br>                            <span class="hljs-string">\LNTHR5Z64.inf</span>          <span class="hljs-comment"># 这是我们后面需要的</span><br>                        <span class="hljs-string">\LNTHR5Zcmmn.cab</span><br>            <span class="hljs-string">\Scanner</span><br>        <span class="hljs-string">\Install</span><br>        <span class="hljs-string">\SetupAssistance</span><br>        <span class="hljs-string">\Startup</span><br>        <span class="hljs-string">\AUTORUN.inf</span><br>        <span class="hljs-string">\setup.exe</span><br>        <span class="hljs-string">\setup.exe.manifest</span><br>        <span class="hljs-string">\setup.ini</span><br></code></pre></td></tr></table></figure></li>
+<li>安装会需要驱动文件和用户名+密码<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">用户名: Administrator</span><br><span class="hljs-section">密码: (刮开此处获取密码 ---&gt; 密码怎么可能放在公网上呢)</span><br></code></pre></td></tr></table></figure></li>
+<li>在打印机非休眠状态下，进行下一步安装后，初次安装会提示需要驱动文件，选择，从磁盘安装，到上面提到的“LHTHR5Z64.inf”文件安装即可，选择“M7268”型号，安装完毕</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B7%A5%E5%85%B7/" class="category-chain-item">工具</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Frp/">#Frp</a>
+      
+        <a href="/tags/RDP/">#RDP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>远程打印指南</div>
+      <div>https://yunchaozheng.github.io/2022/02/27/remote-print/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>澤村·もう一郎/YunchaoZheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年2月27日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/01/my-paper/" title="Re:从零开始的硕士毕业设计思路">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Re:从零开始的硕士毕业设计思路</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/25/streamlit-tryout/" title="streamlit-tryout">
+                        <span class="hidden-mobile">streamlit-tryout</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","appKey":"vi1n3CFEQUwkeRVGiw6pbL4L","path":"window.location.pathname","placeholder":"一郎でせ、こにちは！","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      这个博客基于「 <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 」他们做了一些很棒的东西 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

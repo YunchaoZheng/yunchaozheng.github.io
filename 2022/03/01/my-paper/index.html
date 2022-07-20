@@ -1,0 +1,932 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="澤村·もう一郎/YunchaoZheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="おや　みんな！ 这篇文章动笔于 Mar-3，动笔的动机在于总结一下“在暴风雨中”一般的假期，虽然有按照完美的作息工作休息，但是学习的内容，特别是关于毕业设计的内容“被吹得”七零八落，正好趁这次总结问一下自己，文章到底怎么办。虽然之前也有了解一些内容了，但是没有里程碑式的材料，所以也可以说是「从零开始的硕士毕业设计」。 原因先简单交代一下，要研究的题目是老题目了，新闻推荐系统。个人想做的原因有几个：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Re:从零开始的硕士毕业设计思路">
+<meta property="og:url" content="https://yunchaozheng.github.io/2022/03/01/my-paper/index.html">
+<meta property="og:site_name" content="Re:Zero 〜異世界行ったら本気だす〜">
+<meta property="og:description" content="おや　みんな！ 这篇文章动笔于 Mar-3，动笔的动机在于总结一下“在暴风雨中”一般的假期，虽然有按照完美的作息工作休息，但是学习的内容，特别是关于毕业设计的内容“被吹得”七零八落，正好趁这次总结问一下自己，文章到底怎么办。虽然之前也有了解一些内容了，但是没有里程碑式的材料，所以也可以说是「从零开始的硕士毕业设计」。 原因先简单交代一下，要研究的题目是老题目了，新闻推荐系统。个人想做的原因有几个：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-843ca3b4b426751db7e529955d9d719b_b.png">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-7d22ddeb0171205eed7d9aa8760cf286_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-78aae97cb47f3e1910996d0ea73c5c94_b.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-2a2917e84e65f40a8ddfe022cf5883b6_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-37290cddd41b44e4db3cfe6948366f0c_b.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221131705.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221141056.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220303111849.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173931.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221194153.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220303130730.png">
+<meta property="article:published_time" content="2022-03-01T12:13:07.000Z">
+<meta property="article:modified_time" content="2022-07-03T14:26:08.231Z">
+<meta property="article:author" content="澤村·もう一郎&#x2F;YunchaoZheng">
+<meta property="article:tag" content="推荐系统">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic4.zhimg.com/v2-843ca3b4b426751db7e529955d9d719b_b.png">
+  
+  
+  
+  <title>Re:从零开始的硕士毕业设计思路 😸 Re:Zero 〜異世界行ったら本気だす〜</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yunchaozheng.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":50,"cursorChar":"😺","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","app_key":"vi1n3CFEQUwkeRVGiw6pbL4L","server_url":"https://yzugqiba.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tensei~日记⭐</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/index.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.7)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Re:从零开始的硕士毕业设计思路"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-03-01 20:13" pubdate>
+          2022年3月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Re:从零开始的硕士毕业设计思路</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>おや　みんな！</p>
+<p>这篇文章动笔于 Mar-3，动笔的动机在于总结一下“在暴风雨中”一般的假期，虽然有按照完美的作息工作休息，但是学习的内容，特别是关于毕业设计的内容“被吹得”七零八落，正好趁这次总结问一下自己，文章到底怎么办。虽然之前也有了解一些内容了，但是没有里程碑式的材料，所以也可以说是「从零开始的硕士毕业设计」。</p>
+<h1 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h1><p>先简单交代一下，要研究的题目是老题目了，新闻推荐系统。个人想做的原因有几个：<br>一、本身是阅读党，有关注一些 RSS，也会关注一些被推送的新闻，对于被推送一些不喜欢的新闻也很困扰，因此对新闻推荐系统抱有了额外的兴趣；<br>二、关注的很多算法大神、资讯栏目很多讲到推荐系统算法，也学到了一些；<br>三、前段时间精读了一些关于新的推荐系统新闻数据和算法的文章，很想尝试一下；<br>四、有朋友想研究，正好我在别的方面也没什么想法</p>
+<h1 id="意义"><a href="#意义" class="headerlink" title="意义"></a>意义</h1><p>先放着暂时不想写，由于这个课题是比较常见的，意义什么的比较容易准备吧。</p>
+<h1 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h1><p>新闻有很强的时效性。新闻平台每天会产生大量新的新闻，而已有的新闻会快速消失。这带来了严重的冷启动问题，并导致许多如协同过滤等基于 ID 来表示用户和待推荐物品的推荐方法无法使用；</p>
+<p>其次，很多现有的推荐系统使用如 ID 等人工设计的特征来表示待推荐物品。但是，新闻文章具有丰富的文本，并且这些文本包含重要的内容信息。推荐系统需要从新闻文本中了解新闻内容，不能简单地使用 ID 等特征来表示新闻；</p>
+<p>第三，准确地建模用户对新闻的兴趣存在挑战。用户的兴趣通常比较多样并随时间动态演化，需要基于大量的用户反馈行为来挖掘和建模。然而新闻平台上往往不具有显式的用户反馈，甚至许多用户的隐式反馈也十分稀疏。因此，新闻推荐是一个重要并具有挑战性的研究课题。</p>
+<p>【微软亚洲研究院】</p>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>近年来，学术界和工业界的研究人员提出一些基于深度学习的新闻推荐方法，如 Embedding based News Recommendation 等。但这些方法通常是在私有数据集上设计和验证的，这使得其他研究人员难以对这些方法进行验证并提出改进。</p>
+<p>很多推荐任务如产品推荐、电影推荐和餐厅推荐等通常有一些公认的基准数据集，例如 Amazon、MovieLens、Yelp 等。然而在新闻推荐领域高质量的基准数据集比较匮乏，严重制约了这一研究领域的进展。目前 <strong>仅有少数几个公开</strong> 的新闻推荐数据集，例如 Plista、Adressa、Globo 和 Yahoo! 等。但是，这些数据集存在一些限制。例如，它们 <strong>大部分不是英文数据集，并且其中一些规模很小，或者新闻信息不完整</strong>。</p>
+<p>【微软亚洲研究院】</p>
+<img src="https://pic4.zhimg.com/v2-843ca3b4b426751db7e529955d9d719b_b.png" srcset="/img/loading.gif" lazyload class="" title="已有的若干公开新闻推荐数据集">
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>这里展示一些常见的通用推荐算法、新闻推荐算法、特性、来源等等材料。<br>(注：这里的常见值得是应用比较宽的推荐方法，并不是指最一般的推荐算法，因为那些方法用于新闻数据集基本效果很差)</p>
+<p>常见/通用算法，以人工设计的形式表示新闻特征和用户特征(协同过滤等思路)<br>新的新闻推荐算法使用自然语言模型从新闻文本中学习新闻内容表示，并使用神经网络从过去点击过的新闻中学习用户兴趣表示，设计端到端训练</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>特征</th>
+<th>实验</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>常见推荐算法</strong></em></td>
+<td>😺</td>
+<td>😺</td>
+<td>😺</td>
+</tr>
+<tr>
+<td>FM</td>
+<td>基于因式分解机的经典推荐方法，使用用户ID、新闻ID、先前点击的新闻、候选新闻中提取的内容特征</td>
+<td>√</td>
+<td>Steffen Rendle. 2012. Factorization machines with libfm. TIST, 3(3):57:1–57:22.</td>
+</tr>
+<tr>
+<td>DSSM</td>
+<td>深度结构化语义模型，使用三格哈希和多层前馈网络进行匹配，应该是基于内容范式的方法</td>
+<td>√</td>
+<td>Po-Sen Huang, Xiaodong He, Jianfeng Gao, Li Deng,Alex Acero, and Larry Heck. 2013. Learning deep structured semantic models for web search using clickthrough data. In CIKM, pages 2333–2338.</td>
+</tr>
+<tr>
+<td>Wide＆Deep</td>
+<td>双通道网络推荐，基于内容范式的方法</td>
+<td>√</td>
+<td>Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. 2016. Wide &amp; deep learning for recommender systems. In DLRS, pages 7–10. ACM.</td>
+</tr>
+<tr>
+<td>DeepFM</td>
+<td>综合了深度网络和因子机(what’s this)，基于内容范式</td>
+<td>√</td>
+<td>Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. 2017. Deepfm: a factorizationmachine based neural network for ctr prediction. In AAAI, pages 1725–1731. AAAI Press.</td>
+</tr>
+<tr>
+<td><em><strong>新闻推荐算法</strong></em></td>
+<td>😺</td>
+<td>😺</td>
+<td>😺</td>
+</tr>
+<tr>
+<td>DFM</td>
+<td>使用了一个概念性的深度网络，以捕捉特征之间复杂的相互作用？？</td>
+<td>√</td>
+<td>Jianxun Lian, Fuzheng Zhang, Xing Xie, and Guangzhong Sun. 2018. Towards better representation learning for personalized news recommendation: a multi-channel deep fusion approach. In IJCAI, pages 3805–3811.</td>
+</tr>
+<tr>
+<td>GRU</td>
+<td>使用GRU网络从点击的新闻序列中学习用户表征</td>
+<td>√</td>
+<td>Shumpei Okura, Yukihiro Tagami, Shingo Ono, and Akira Tajima. 2017. Embedding-based news recommendation for millions of users. In KDD, pages 1933–1942. ACM.</td>
+</tr>
+<tr>
+<td>DKN</td>
+<td>使用CNN进行词嵌入的网络</td>
+<td>√</td>
+<td>Hongwei Wang, Fuzheng Zhang, Xing Xie, and Minyi Guo. 2018. Dkn: Deep knowledge-aware network for news recommendation. In WWW, pages 1835–1844.</td>
+</tr>
+<tr>
+<td>NPA</td>
+<td>具有个性化关注机制的网络</td>
+<td>√</td>
+<td>Chuhan Wu, Fangzhao Wu, Mingxiao An, Jianqiang Huang, Yongfeng Huang, and Xing Xie. 2019b. Npa: Neural news recommendation with personalized attention. In KDD, pages 2576–2584. ACM.</td>
+</tr>
+<tr>
+<td>NAML</td>
+<td>多视角学习的网络新闻推荐方法</td>
+<td>√</td>
+<td>Chuhan Wu, Fangzhao Wu, Mingxiao An, Jianqiang Huang, Yongfeng Huang, and Xing Xie. 2019a. Neural news recommendation with attentive multiview learning. In IJCAI-19, pages 3863–3869.</td>
+</tr>
+<tr>
+<td>LSTUR</td>
+<td>长、短期用户兴趣，从最近点击的新闻中用GRU建立短期用户兴趣模型，并从整个点击历史中建立长期用户兴趣模型</td>
+<td>√</td>
+<td>Mingxiao An, Fangzhao Wu, Chuhan Wu, Kun Zhang, Zheng Liu, and Xing Xie. 2019. Neural news recommendation with long-and short-term user representations. In ACL, pages 336–345.</td>
+</tr>
+</tbody></table>
+<p>传统方法，LDA 和 TF-IDF 等，加上 CNN、LSTM 和多头自注意力机制等基于深度学习的文本表示模型，理解新闻内容。 BERT 等预训练语言模型。</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>特征</th>
+<th>实验</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LDA</td>
+<td>使用一个概念性的网络来结合具有不同深度的神经网络深度的神经网络，以捕捉不同特征之间复杂的相互作用</td>
+<td>√</td>
+<td>MS</td>
+</tr>
+<tr>
+<td>TF-IDF</td>
+<td>传统方法，评估一字词对于一个文件集或一个语料库中的其中一份文件的重要程度。字词的重要性随着它在文件中出现的次数成正比增加</td>
+<td>√</td>
+<td>MS</td>
+</tr>
+<tr>
+<td>CNN</td>
+<td>不用说了老熟人</td>
+<td>√</td>
+<td>MS</td>
+</tr>
+<tr>
+<td>Self-Att</td>
+<td>不用说了老熟人</td>
+<td>√</td>
+<td>MS</td>
+</tr>
+<tr>
+<td>LSTM</td>
+<td>不用说了老熟人</td>
+<td>√</td>
+<td>MS</td>
+</tr>
+</tbody></table>
+<p>同时使用多种新闻文本（例如标题、摘要、正文、类别和命名实体）往往比单独使用某一种新闻文本更好地理解新闻内容</p>
+<p>那么。图片？</p>
+<p>那么。图片+标签？</p>
+<p>微软亚洲研究院也承认，未来我们计划将新闻中的图像和视频信息以及不同语言的新闻条目加入到 MIND 数据集中，以支持多模态和多语言的新闻推荐的研究。</p>
+<p>那么为什么我们不做这件事情。</p>
+<h1 id="创新"><a href="#创新" class="headerlink" title="创新"></a>创新</h1><p>要说文章有什么创新的话，我大概归纳到以下几点：</p>
+<ol>
+<li>数据创新，MIND 数据集刚问世不久(2020)，但是又大又全又有质量保障，是一个值得探索的数据集</li>
+<li>方法上，MIND 数据集没有图片，但是提供了新闻链接，所以通过 CSCNN+图片+新闻标签+title+摘要+body的形式，应该能嵌入足够的很好的信息<br>粗略随便估算了一下，新闻数据+爬取图片数据内容，大约会占 250GB 的空间，这个规模应该还能够处理</li>
+<li>架构上，没有在线的 A/B Test，但是通过 CSCNN 进行 early infusion 的形式，在新闻推荐的应用上应该是第一次<h2 id="数据-1"><a href="#数据-1" class="headerlink" title="数据"></a>数据</h2>新闻推荐数据集 Microsoft News Dataset，简称 MIND。MIND 数据集是从六周内 Microsoft News 用户的匿名化新闻点击记录中构建的，它包含16万多条新闻条目，1500 余万次展示记录，以及来自100万匿名用户的2400余万次点击行为。在 MIND 数据集中，每个新闻条目都具有丰富的 <strong>文本信息</strong>，例如标题、摘要、正文、类别和实体。<img src="https://pic3.zhimg.com/v2-7d22ddeb0171205eed7d9aa8760cf286_b.jpg" srcset="/img/loading.gif" lazyload class="" title="MIND 数据集统计数据"></li>
+</ol>
+<p>MIND 数据集中新闻标题、摘要和正文的长度分布，新闻标题通常很短，而新闻正文则比较长。另外，大约85％的新闻文章自首次出现算起，大约在两天后将不再显示在新闻主页上，表明新闻信息在网络新闻平台的更新速度很快(这意味着我们要花相当的心思给冷启动，这也是为什么我希望通过图片再吸收信息的原因)</p>
+<img src="https://pic1.zhimg.com/v2-78aae97cb47f3e1910996d0ea73c5c94_b.jpg" srcset="/img/loading.gif" lazyload class="" title="MIND 数据集中新闻标题、摘要和正文的长度分布以及新闻生存时间的分布">
+<p>MIND 数据集中的每个样本都组织为[UserID, Timestamp, ImpressionLog, ClickHistory]的格式。UserID 和 Timestamp 表示一组新闻在时间 Timestamp 展示给了目标用户 UserID。ImpressionLog 包含了这组新闻中具体包含的新闻及用户和他们的交互行为（点击或不点击）。ClickHistory 是该用户过去点击过的新闻文章的序列</p>
+<img src="https://pic3.zhimg.com/v2-2a2917e84e65f40a8ddfe022cf5883b6_b.jpg" srcset="/img/loading.gif" lazyload class="" title="MIND 数据集中的一个样本示例">
+<p>MIND 数据集同时提供了新闻条目的详细信息。每个新闻都有 ID、URL、标题、摘要、类别和命名实体信息。</p>
+<p>此外，微软提供了一个可以从 URL 对应的新闻网页抓取和解析新闻正文内容的工具。<br>这正是我所需要的。<br>这里展示了一个示例新闻。对于新闻中出现的命名实体，MIND 数据集还提供了从公开知识图谱预训练的实体及其关系的嵌入向量，以促进知识增强的新闻推荐方法的研究。</p>
+<img src="https://pic1.zhimg.com/v2-37290cddd41b44e4db3cfe6948366f0c_b.jpg" srcset="/img/loading.gif" lazyload class="" title="MIND 数据集中的一条示例新闻">
+
+<h2 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h2><p>方法的话，就不得不提到之前读的另一篇论文了。</p>
+<a href="/2022/02/20/wannot-readpaper-0001/" title="Category-Specific CNN for Visual-aware CTR Prediction at JD.com">Category-Specific CNN for Visual-aware CTR Prediction at JD.com</a>
+<p>推荐系统下，专门针对电商方面，图像广告投放与 CTR 预测研究的 CSCNN 模型，早期的 CPC 推荐系统中，研究表明结合视觉特征，与非视觉特征(如类别标签、用户信息等)融合在一起预测，会起到更好的效果，当然用户也更能接受视觉信息投放的广告(attractive)；现在很多方法用的传统现成的(off-the-shell)CNN 来提取视觉特征。通过「图片+标签+early fusion」的模式，JD.com 已经通过真实的实验和 A/B Test 验证了有效性。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221131705.png" srcset="/img/loading.gif" lazyload class="" title="Structure of CTR Prediction System">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221141056.png" srcset="/img/loading.gif" lazyload class="" title="CSCNN">
+<p>选用 CSCNN 的原因大概在以下几点：</p>
+<ol>
+<li>CSCNN 要求需要有「标签 Category」，这点 JD 的数据、Mind 数据都是满足的。</li>
+<li>JD 的数据和 Mind 数据相似，都有显著的长尾效应</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220303111849.png" srcset="/img/loading.gif" lazyload class="" width="470" height="350"></th>
+<th><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173931.png" srcset="/img/loading.gif" lazyload class="" width="280" height="350"></th>
+</tr>
+</thead>
+</table>
+<p>一幅图说明的是新闻的热点时间也就一天多一点，另一幅图说明的是电商广告热点频率很低，从某种意义上，这二者说的意思一致。<br>3. CSCNN 对传统 CNN 进行兼容性改进，不过由于知名度、需要标签等使用的人还比较少，找到一份开源代码实现</p>
+<h3 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h3><p>JD 的数据集是广告内容，文本信息其实不多，因此京东的 DCN 网络在处理文本材料时，仅仅使用了很简单的嵌入层。</p>
+<a href="https://yunchaozheng.github.io/2022/02/20/wannot-readpaper-0001/#Non-visual-Feature-Embedding" title="" target="">Non-visual-Feature-Embedding</a>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221194153.png" srcset="/img/loading.gif" lazyload class="" title="Non-visual-Feature-Embedding">
+<p>这样子的话在新闻推荐上貌似不行的，新闻推荐方面文本信息包含了相当大的知识，而微软的论文 <a href="https://msnews.github.io/assets/doc/ACL2020_MIND.pdf" title="" target="">MIND</a> 中也指出了，加入「标题+摘要+正文+类别+命名实体」这样完全的信息(命名实体还不知道是什么东西)，采用高级的文本嵌入方式能取得更好的表现，因此本研究在设计的时候也考虑采用完全的文本信息，考虑一下微软推荐的采用微调预训练的 BERT(这里有点难点就是暂时不清楚微软是怎么调整的)。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>先随手拼了一下 CSCNN 和 BERT 的图，大致的意思是在预测 CTR 的时候，保留主体简单但 robust 的 DCN 网络结构大致不变，取消原本因为线上系统性能需要的 LookupTable(这个举措好不好呢？写文章的时候觉得又有必要保留下来节省性能)；CSCNN 的主体结构大致也不变，输入图片和类别标签从 Mind 数据集或者爬取</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220303130730.png" srcset="/img/loading.gif" lazyload class="" title="Structure">
+<p>调整原本有点单薄的文本嵌入层，加上一层比较完整的 NLP 网络(这里就用 bert 示例)，这样 DCN 两端都是比较 state-of-art 的网络，做出来的效果应该会比较好。</p>
+<h1 id="计划预估"><a href="#计划预估" class="headerlink" title="计划预估"></a>计划预估</h1><p>因为这个规模(从数据集规模，从工作量规模来说)的工作我也是第一次，并且平时有上课或者班级的杂事，暂且预估两个月的时间。</p>
+<p>实验思路的话，我打算仿照京东的思路，做 state-of-art 对比、有无图片+标签嵌入对比、Hyper-Parameters finetune 程度对比这几组实验</p>
+<table>
+<thead>
+<tr>
+<th>时间 DDL</th>
+<th>预计工作</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mar.15</td>
+<td>Mind+图片爬取</td>
+<td>图片很多，需要费一定功夫，并且入数据库</td>
+</tr>
+<tr>
+<td>Mar.20</td>
+<td>DCN Demo</td>
+<td>DCN 是backbone 网络，作为大框架应该先被搭建完成</td>
+</tr>
+<tr>
+<td>Mar.30</td>
+<td>CSCNN</td>
+<td>关于 CV 方面的知识我稍微懂一些，还是需要比较多的时间来完全搞懂 CSCNN 的知识</td>
+</tr>
+<tr>
+<td>Apr.10</td>
+<td>BERT</td>
+<td>BERT 以前虽然有实践过，但是已经很久了并且任务也不太一样，还是需要比较多时间</td>
+</tr>
+<tr>
+<td>Apr.15</td>
+<td>拿掉CSCNN嵌入</td>
+<td>单纯用新闻文本进行研究，虽然微软做过相关工作，但是还要亲自做一些比较实验</td>
+</tr>
+<tr>
+<td>Apr.30</td>
+<td>State-of-art-comparement</td>
+<td>和比较新的新闻推荐算法对比，这又需要很多时间</td>
+</tr>
+</tbody></table>
+<p>基本实验完成大概也需要两个月吧，后续大概还需要补充实验，加上写作，基本上这学期就用完了。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87/" class="category-chain-item">论文</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" class="category-chain-item">推荐系统</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">#推荐系统</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Re:从零开始的硕士毕业设计思路</div>
+      <div>https://yunchaozheng.github.io/2022/03/01/my-paper/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>澤村·もう一郎/YunchaoZheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年3月1日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/02/dialectics-of-nature-free-talk/" title="「自然辩证法」“绪论”和“马克思主义自然观”部分思考">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「自然辩证法」“绪论”和“马克思主义自然观”部分思考</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/27/remote-print/" title="远程打印指南">
+                        <span class="hidden-mobile">远程打印指南</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","appKey":"vi1n3CFEQUwkeRVGiw6pbL4L","path":"window.location.pathname","placeholder":"一郎でせ、こにちは！","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      这个博客基于「 <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 」他们做了一些很棒的东西 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

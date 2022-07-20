@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="澤村·もう一郎/YunchaoZheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基本信息作者: Hu Liu, Jing Lu, Hao Yang 等主要机构: JD.COM来源: KDD 2020提交时间: 2020-Jun-19关键词: RS, category-specific CNN, architecture Introduction在本文有关的 RS，通常说的就是 CPC 推荐系统。CPC，即 cost-per-click ，以每个投放(impression)的成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Category-Specific CNN for Visual-aware CTR Prediction at JD.com">
+<meta property="og:url" content="https://yunchaozheng.github.io/2022/02/20/wannot-readpaper-0001/index.html">
+<meta property="og:site_name" content="Re:Zero 〜異世界行ったら本気だす〜">
+<meta property="og:description" content="基本信息作者: Hu Liu, Jing Lu, Hao Yang 等主要机构: JD.COM来源: KDD 2020提交时间: 2020-Jun-19关键词: RS, category-specific CNN, architecture Introduction在本文有关的 RS，通常说的就是 CPC 推荐系统。CPC，即 cost-per-click ，以每个投放(impression)的成">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221124508.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221131101.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221131705.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133204.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133319.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133645.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133823.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221194153.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221141056.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221141753.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221143226.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221153805.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221154148.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221154640.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221154855.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221160612.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221161242.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221161825.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221165336.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221205310.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221170358.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221171331.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221171725.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221172810.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221172845.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221172930.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173528.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173603.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173931.png">
+<meta property="article:published_time" content="2022-02-20T14:41:21.000Z">
+<meta property="article:modified_time" content="2022-07-03T14:26:08.233Z">
+<meta property="article:author" content="澤村·もう一郎&#x2F;YunchaoZheng">
+<meta property="article:tag" content="推荐系统">
+<meta property="article:tag" content="CNN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221124508.png">
+  
+  
+  
+  <title>Category-Specific CNN for Visual-aware CTR Prediction at JD.com 😸 Re:Zero 〜異世界行ったら本気だす〜</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yunchaozheng.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":50,"cursorChar":"😺","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","app_key":"vi1n3CFEQUwkeRVGiw6pbL4L","server_url":"https://yzugqiba.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tensei~日记⭐</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/index.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.7)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Category-Specific CNN for Visual-aware CTR Prediction at JD.com"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-02-20 22:41" pubdate>
+          2022年2月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Category-Specific CNN for Visual-aware CTR Prediction at JD.com</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h1><p>作者: Hu Liu, Jing Lu, Hao Yang 等<br>主要机构: JD.COM<br>来源: KDD 2020<br>提交时间: 2020-Jun-19<br>关键词: RS, category-specific CNN, architecture</p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>在本文有关的 RS，通常说的就是 CPC 推荐系统。CPC，即 cost-per-click ，以每个投放(impression)的成本来衡量的推荐系统，衡量标准为 eCPM(effective cost per mille)，每千次投放带来的收益。而最终衡量投放有效性的，是 CTR(Click Through Rate)，即 click/impression，CTR 高代表这个投放是有效的。</p>
+<p>CSCNN，即标题中提到的 Category-Specific CNN，是京东开发的结合图像标签先验知识的特定类别型 CNN。本文是推荐系统下，专门针对电商方面，图像广告投放与 CTR 预测研究的 CSCNN 模型，文章做了比较不错的性能测试和对比分析，当然背靠京东这棵互联网电商大树，京东的 CSCNN 研究人员做了足够的消融实验和对照实验。</p>
+<p>首先讲一下，为什么京东要提出这个 CSCNN 模型。在早期的 CPC 推荐系统中，研究表明结合视觉特征，与非视觉特征(如类别标签、用户信息等)融合在一起预测，会起到更好的效果，当然用户也更能接受视觉信息投放的广告(attractive)；现在很多方法用的传统现成的(off-the-shell)CNN 来提取视觉特征。</p>
+<p>讲到这里，就要提传统 CNN 在电商领域为什么不合适：<br>一、CNN 负责的任务是分类任务，简单来说，输入-判别，类别标签作为输出存在，电商领域的广告图像一般都具有标签，类别已经是确定的知识，电商领域的任务需求，是将这些标签也输入，最后要求提取出有助于 CTR 增长的视觉信息，用传统 CNN 浪费了很多潜在性能和表达能力在判别方面；<br>二、在真正在线的推荐系统中使用 CNN 也是不现实的，要 CNN 的性能跟上电商系统随时间输入的信息流，做到低延迟回复，做不到；<br>三、一些研究通过在 CNN 嵌入后的基础上用一些特定的投影矩阵来分解信息，这是一种事后处理的方法，文中成为 late fusion ，相比原来不处理肯定好，但是 CSCNN 提出了 early-fusion 处理的方式，效果更好。</p>
+<h1 id="CTR-预测"><a href="#CTR-预测" class="headerlink" title="CTR 预测"></a>CTR 预测</h1><p>废话少说，直接开始正题好了。首先要放一下后面看到的一些符号的说明表。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221124508.png" srcset="/img/loading.gif" lazyload class="" title="Important Notations Used">
+<p>CTR 实际上可以表示为在进行一次广告投放 impression 后能否发生正反馈(通常就是 click)的概率。</p>
+<p>CTR 预测可以表示为一种二分类预测，最终目标是为了要学习一种 prediction function f: Rd -&gt; R，让数据拟合的 f 趋近真实的 R 的映射关系。D={(x1,y1)…(xd,yd)}，Rd={x1…xd}，yi={0,1} 表示 click 是否发生。</p>
+<p>以如下负对数似然化表示的目标函数: </p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221131101.png" srcset="/img/loading.gif" lazyload class="" title="negative log-likelihood object function">
+<p>y尖是预测的 CTR，最后通过 sigmoid 映射到(0,1)</p>
+<p>这里看看整个 CTR 预测系统的架构图:</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221131705.png" srcset="/img/loading.gif" lazyload class="" title="Structure of CTR Prediction System">
+<p>底下的 Xv 代表视觉特征的向量，由广告图片通过 CSCNN 提取或者通过 LookupTable 查找得到(为了节省时间，符合线上需求，CSCNN 把离线模型的图片特征，连同 AdID 都记录下来形成一个字典，在线系统通过查找字典避免了耗时计算)；Xnv代表非视觉特征的向量，如用户信息等，顶部一种修改过的 DCN(Deep Cross Network)将 Xv, Xnv 作为输入吸收，预测 CTR。</p>
+<h1 id="DCN-Deep-Cross-Network"><a href="#DCN-Deep-Cross-Network" class="headerlink" title="DCN(Deep Cross Network)"></a>DCN(Deep Cross Network)</h1><p>Deep &amp; Cross Network. Deep &amp; Cross network (DCN) has achieved promising performance thanks to the ability to learn effective feature interactions</p>
+<h2 id="Deep-Net"><a href="#Deep-Net" class="headerlink" title="Deep Net"></a>Deep Net</h2><p>Xv(150维), Xnv(380维)输入，layer1 将 Xnv 转换到1024维并连接在 Xv 后面:</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133204.png" srcset="/img/loading.gif" lazyload class="" title="layer1"> 
+<p>后面是两层深度层，结果为一个256维向量:</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133319.png" srcset="/img/loading.gif" lazyload class="" title="layer23">
+<p>以上是深度网络(deep net)的嵌入结果。</p>
+<h2 id="Cross-Net"><a href="#Cross-Net" class="headerlink" title="Cross Net"></a>Cross Net</h2><p>交叉网络(cross net)处理非视觉特征:</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133645.png" srcset="/img/loading.gif" lazyload class="" title="cross net layer">
+<p>z0 是一开始的 Xnv，其余均为 cross net 的参数。</p>
+<h2 id="Sigmoid-Combine"><a href="#Sigmoid-Combine" class="headerlink" title="Sigmoid Combine"></a>Sigmoid Combine</h2><p>最后，用 sigmoid 把两方面网络的输出整合起来:</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221133823.png" srcset="/img/loading.gif" lazyload class="" title="sigmoid conbine">
+
+<h1 id="Non-visual-Feature-Embedding"><a href="#Non-visual-Feature-Embedding" class="headerlink" title="Non-visual Feature Embedding"></a>Non-visual Feature Embedding</h1><p>非视觉特征的嵌入，本文采用了一种左乘一个特别的嵌入字典的方式，压缩原本非常稀疏的 One-hot 向量。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221194153.png" srcset="/img/loading.gif" lazyload class="" title="Non-visual Feature Embedding">
+
+<h1 id="Category-Specific-CNN"><a href="#Category-Specific-CNN" class="headerlink" title="Category-Specific CNN"></a>Category-Specific CNN</h1><p>Category-Specific CNN, that embeds an ad image m, together with the ad category k ∈ K, to the visual feature Xv.<br>这句话说明了 CSCNN 的核心，将图片及类别一起嵌入(early fusion)。文中还提到，CSCNN 可以放到任何网络的任何一个卷积层中，这提供了很好的兼容性，具体 CSCNN 的结构，下面一一展开。</p>
+<h2 id="Framework-on-A-Single-Convolutional-Layer"><a href="#Framework-on-A-Single-Convolutional-Layer" class="headerlink" title="Framework on A Single Convolutional Layer"></a>Framework on A Single Convolutional Layer</h2><p>单一卷积层的框架，先放上文中展示的一层卷积层的示意图。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221141056.png" srcset="/img/loading.gif" lazyload class="" title="A Single Convolutional Layer">
+
+<h3 id="Channel-wise-attention"><a href="#Channel-wise-attention" class="headerlink" title="Channel-wise attention"></a>Channel-wise attention</h3><p>对于一种类别 k 和通道 C，卷积层 l，CSCNN 会学习一个 Akc(l省略) 来表示类别信息对通道注意力的影响。</p>
+<p>对于一个(中间的)特征图 F，CSCNN 首先会学习一个包含通道信息和类别信息的 channel attention map 通道注意力特征图 Mc，然后 Mc 会和 F 进行元素乘，获得精炼特征图 F1。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221141753.png" srcset="/img/loading.gif" lazyload class="" title="channel attention refine">
+
+<h4 id="Channel-wise-attention-tells-what-to-focus-on"><a href="#Channel-wise-attention-tells-what-to-focus-on" class="headerlink" title="Channel-wise attention tells what to focus on"></a>Channel-wise attention tells what to focus on</h4><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221143226.png" srcset="/img/loading.gif" lazyload class="" title="channel attention">
+<p>为了获得空间信息，使用最大和平均池化对特征图 F 进行压缩，然后与类别先验知识向量 Akc 连接，传入共享的两层 MLP，维数从 1+1+(C+C1) 降到 1+1+C，最后通过元素和进行合并。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221153805.png" srcset="/img/loading.gif" lazyload class="">
+
+<h3 id="Spatial-wise-attention"><a href="#Spatial-wise-attention" class="headerlink" title="Spatial-wise attention"></a>Spatial-wise attention</h3><p>和 Akc 类似，CSCNN 会学习一个张量 Aks，表示类别信息对空间注意力的影响。</p>
+<p>对于精炼后的 F1，CSCNN 使用包含空间信息和类别信息的 spatial attention map 空间注意力特征图 Ms，与 F1 进行元素乘，获得精炼特征图 F2。F2 被投放到下一层作为 F 或者作为输出。</p>
+<h4 id="Spatial-wise-attention-tells-where-to-focus-on"><a href="#Spatial-wise-attention-tells-where-to-focus-on" class="headerlink" title="Spatial-wise attention tells where to focus on"></a>Spatial-wise attention tells where to focus on</h4><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221154148.png" srcset="/img/loading.gif" lazyload class="" title="spatial attention">
+<p>受到 CBAM 启发，CSCNN 首先沿通道维度进行平均和最大池化来汇总特征图 F 的通道信息，然后和 Aks 连接形成一个 H×W×3 的特征图，传入 7×7 的卷积过滤器。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221154640.png" srcset="/img/loading.gif" lazyload class="">
+
+<h1 id="System-Deployment"><a href="#System-Deployment" class="headerlink" title="System Deployment"></a>System Deployment</h1><p>We deploy CSCNN for the search advertising system of JD.com, the largest B2C e-commerce company in China, serving the main traffic of hundreds of millions of active users.</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221154855.png" srcset="/img/loading.gif" lazyload class="" title="The architecture of the online model system">
+
+<h2 id="Offline-training"><a href="#Offline-training" class="headerlink" title="Offline training"></a>Offline training</h2><p>CSCNN 与整个 CTR 系统一起，在 32 天百亿规模的真实生产数据集上训练。其中 CNN 是训练中关键计算瓶颈。以 ResNet18 网络为例，输入图片 224×224，一台有 4 个 P40GPU 的单机每天只能训练 1.77 亿张图片。意味着只考虑 CSCNN 和分布式线性加速，也需要 22640 个 GPU 才能在一天内完成百亿张图片训练。因此采用了采样策略，一个 batch 中最多收集 25 张相同特征的广告，一张图片嵌入只进行一次，并在这批图片中传播多个特征。现在 28 张 P40GPU，也能在一天内完成训练。</p>
+<h2 id="Offline-inferring"><a href="#Offline-inferring" class="headerlink" title="Offline inferring"></a>Offline inferring</h2><p>图像和类别标签被送入 CSCNN 来推动视觉特征，制作一个 LookupTable 载入在内存中。再来一个相同的 广告ID，同一张图片，直接在LookupTable 中查找对应的视觉特征。经过降维和频率控制，一个 20GB 的 LookupTable 可以覆盖第二天 90% 的视觉特征需求。</p>
+<h2 id="Online-serving"><a href="#Online-serving" class="headerlink" title="Online serving"></a>Online serving</h2><p>收到请求会直接从 LookupTable 查找视觉特征，返回 CTR 预测。在吞吐量 3 倍的高峰期，每秒百万条数据下，CPU 的延迟也低于 20ms。</p>
+<h1 id="Experiment-Results"><a href="#Experiment-Results" class="headerlink" title="Experiment Results"></a>Experiment Results</h1><p>We exam the effectiveness of both our proposed visual modeling module CSCNN and the whole CTR prediction system.<br>实验主要可以分为两部分：</p>
+<ol>
+<li>消融实验 Ablation Study. 将 CSCNN 放入到轻量级 CNN 和小型 CTR 预测实验中，使用公开数据集保障实验的可重复性；</li>
+<li>测试了 CTR 预测系统由于视觉模型改进得到的性能提升，包括离线实验和在线A/B对照实验。</li>
+</ol>
+<h2 id="Ablation-Study"><a href="#Ablation-Study" class="headerlink" title="Ablation Study"></a>Ablation Study</h2><p>Aim at “lightest” model to eliminate the “huge system” effect.<br>所以实验的目标放在了 VBPR 一种矩阵分解框架，轻量,但是和主流模型有着接近的性能。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221160612.png" srcset="/img/loading.gif" lazyload class="" title="VBPR">
+<p> Φ 使用了 CNN-F 作为基础的 CNN，卷积2-卷积5接入了 CSCNN。</p>
+<h2 id="Evaluation-Study"><a href="#Evaluation-Study" class="headerlink" title="Evaluation Study"></a>Evaluation Study</h2><p>简而言之，使用的是 AUC，AUC 表示使用方法后，随机预测准确相对于随机预测不准确的比例，介于(0.5, 1)之间。越接近0.5，代表预测准和不准比例差不多，随便猜猜，越接近1，方法越有效。<br>在推荐系统领域，AUC 应用得非常普遍。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221161242.png" srcset="/img/loading.gif" lazyload class="" title="AUC">
+<p>离线实验的 AUC 很能反应在线系统的表现，对于京东 JD.com 来说，1‰ 的 AUC 增长意味着六百万美元的广告收入。</p>
+<h2 id="Comparison-with-State-of-the-arts"><a href="#Comparison-with-State-of-the-arts" class="headerlink" title="Comparison with State-of-the-arts"></a>Comparison with State-of-the-arts</h2><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221161825.png" srcset="/img/loading.gif" lazyload class="" title="Comparison with State-of-the-arts">
+<p><strong>BPR-MF</strong>: The Bayesian Personalized Ranking (BPR) , No visual features. Only includes the first 4 terms in Eq(12).<br><strong>BPR-MF</strong>: 最简单的 BPR<br><strong>VBPR</strong>: BPR + visual. The visual features are extracted from pre-trained and fixed CNN [8].<br><strong>VBPR</strong>: 最简单的 BPR +视觉<br><strong>DVBPR</strong>: The visual feature extractor CNN is trained end-to-end together with the whole CTR prediction model [12].<br><strong>DVBPR</strong>: CNN-CTR 模型端到端训练<br><strong>DVBPR-C</strong>: DVBPR + category. The Category information is late fused into MF by sharing γa among items from the<br>same category.<br><strong>DVBPR-C</strong>: DVBPR +类别，类别信息后融合 late fusion<br><strong>Sherlock</strong>: DVBPR + category. Category is used in the linear transform after the visual feature extractor [7].<br><strong>Sherlock</strong>: DVBPR +类别，类别信息用于视觉提取后的线性变换层面<br><strong>DeepStyle</strong>: Category embedding is subtracted from the visual feature to obtain style information [14].<br><strong>DeepStyle</strong>: 类别嵌入从视觉特征中减去<br><strong>SCA</strong>: This algorithm was originally designed for image captioning [3] where features of captioning were used in visual attention. To make it a strong baseline in CTR prediction, we slight modify this algorithm by replacing the captioning features to category embedding, so that the category information is early fused into CNN.<br><strong>SCA</strong>: 最初设计面向图像截取，截取特征用在视觉注意力上，本实验中改变用于类别嵌入</p>
+<h2 id="Adaptation-to-Various-Attentions"><a href="#Adaptation-to-Various-Attentions" class="headerlink" title="Adaptation to Various Attentions"></a>Adaptation to Various Attentions</h2><p>CSCNN 核心要点在于使用类别先验知识，指导注意力机制。这里实验采用了三种主流的注意力机制结构进行测试: SE、CBAM-Channel、CBAM-All</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221165336.png" srcset="/img/loading.gif" lazyload class="" title="Adaptation to Various Attentions">
+
+<h2 id="Adaptability-to-Various-Network-Backbones-amp-Effects-of-Hyper-Parameters"><a href="#Adaptability-to-Various-Network-Backbones-amp-Effects-of-Hyper-Parameters" class="headerlink" title="Adaptability to Various Network Backbones &amp; Effects of Hyper-Parameters"></a>Adaptability to Various Network Backbones &amp; Effects of Hyper-Parameters</h2><img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221205310.png" srcset="/img/loading.gif" lazyload class="" title="Adaptability to Different Backbones">
+<p>观测了 CBAM、CSCNN，以及不加注意力机制(作为基准)的时候，CNN-F 和 Inception V1 模型产生的改变。</p>
+<p>CSCNN 可以将 CNN 下一层输入的特征图 F 替换成 精炼特征图 F2，因此可以在主流网络中用 CSCNN 替换 CNN，这里用对 Inception V1的研究展示一下，替换到怎么样的程度最好。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221170358.png" srcset="/img/loading.gif" lazyload class="" title="Effects of Hyper-Parameters">
+<p>图左 C1 表示通道注意力的先验知识 Akc 的大小<br>图中 H1=W1 表示空间注意力的先验知识 Aks 的大小<br>图右 L 表示 CNN 最后几层卷积层替换成了 CSCNN</p>
+<h2 id="Experiments-On-Real-Production-Dataset-amp-Online-A-B-Testing"><a href="#Experiments-On-Real-Production-Dataset-amp-Online-A-B-Testing" class="headerlink" title="Experiments On Real Production Dataset &amp; Online A/B Testing"></a>Experiments On Real Production Dataset &amp; Online A/B Testing</h2><p>真实生产数据集是从 JD.com 的广告互动日志中抽取的，使用前 32 天的日志训练，第 33 天开始抽取 50w 次投放进行测试。<br>真实生产数据集的部分统计信息如表：</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221171331.png" srcset="/img/loading.gif" lazyload class="" title="Real Production Dataset Statistics">
+<p>在下表中展示的实验结果，验证了本文内容的有效性:</p>
+<ol>
+<li>固定 CNN 增益代表视觉特征 visual feature 的重要性</li>
+<li>微调 finetune 收益验证了 端到端训练 end-to-end train 的重要性</li>
+<li>CBAM 收益验证了注意力机制的重要性</li>
+<li>CSCNN 收益验证了提取将类别先验知识纳入卷积层，使得通道和空间的注意力机制学习更有效<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221171725.png" srcset="/img/loading.gif" lazyload class="" title="Experiments on Real Production Dataset">
+在线实验 A/B test，和之前京东的 DCN 在线模式对比，CSCNN 贡献了 3.22% 的 CTR(点击率)，2.46%的eCPM(每千次投放收益)，并减少了 0.62%(点击成本)。对于京东来说，是不小的收益。</li>
+</ol>
+<h2 id="附录-A"><a href="#附录-A" class="headerlink" title="附录 A"></a>附录 A</h2><p>附录 A 主要描述了，原实验用的是 <strong>点损失 Point-wise loss</strong>，而在一些同样应用于 benchmark Amazon数据集的其他研究中，也有使用 <strong>成对损失 Pair-wise loss</strong> 的存在，因此也做了这样的实验，验证了原结论不变。结果如下：</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221172810.png" srcset="/img/loading.gif" lazyload class="" title="AUC under Pairwise Loss">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221172845.png" srcset="/img/loading.gif" lazyload class="" title="AUC under Pairwise Loss">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221172930.png" srcset="/img/loading.gif" lazyload class="" title="AUC under Pairwise Loss">
+
+<h2 id="附录-B"><a href="#附录-B" class="headerlink" title="附录 B"></a>附录 B</h2><p>附录 B 主要对生产数据集进行了统计描述，真实数据特征都非常的稀疏，遵循长尾分布，80% 的数据在训练集中出现不到 6 次。研究表明，在数据非常稀疏的情况下，提供视觉特征对建模预测的贡献是很大的。</p>
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173528.png" srcset="/img/loading.gif" lazyload class="" width="560" height="700" title="Feature statistics from the search advertising system of JD.com from 20200106 to 20200206 L">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173603.png" srcset="/img/loading.gif" lazyload class="" width="560" height="700" title="Feature statistics from the search advertising system of JD.com from 20200106 to 20200206 M">
+<img src="https://cdn.jsdelivr.net/gh/yunchaozheng/putpicshere/imgs/20220221173931.png" srcset="/img/loading.gif" lazyload class="" width="560" height="700" title="Feature statistics from the search advertising system of JD.com from 20200106 to 20200206 R">
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87/" class="category-chain-item">论文</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E8%AE%BA%E6%96%87/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" class="category-chain-item">推荐系统</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">#推荐系统</a>
+      
+        <a href="/tags/CNN/">#CNN</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Category-Specific CNN for Visual-aware CTR Prediction at JD.com</div>
+      <div>https://yunchaozheng.github.io/2022/02/20/wannot-readpaper-0001/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>澤村·もう一郎/YunchaoZheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年2月20日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/02/25/streamlit-tryout/" title="streamlit-tryout">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">streamlit-tryout</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/20/docker-knowledge/" title="Docker 基础操作知识">
+                        <span class="hidden-mobile">Docker 基础操作知识</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"yzuGQibAyRasVwOLQyLzUuvX-gzGzoHsz","appKey":"vi1n3CFEQUwkeRVGiw6pbL4L","path":"window.location.pathname","placeholder":"一郎でせ、こにちは！","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      这个博客基于「 <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 」他们做了一些很棒的东西 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
